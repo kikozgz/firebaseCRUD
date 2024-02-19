@@ -48,9 +48,9 @@ public class MainActivity extends AppCompatActivity {
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
-                String person = dataSnapshot.getValue(String.class);
+               /* String person = dataSnapshot.getValue(String.class);
                 items.add(person);
-                adapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged();*/
             }
 
             @Override public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {}
@@ -75,20 +75,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void retrievePeople() {
+
         String dniToRetrieve = editTextDNI.getText().toString().trim();
         if (!dniToRetrieve.isEmpty()) {
-            for (String person : items) {
-                if (person.contains("DNI: " + dniToRetrieve)) {
-                    // Mostrar los datos en los EditText
-                    String[] personData = person.split(", ");
-                    editTextName.setText(personData[1].split(": ")[1]);
-                    editTextEmail.setText(personData[2].split(": ")[1]);
-                    // Mostrar los datos en un Toast
-                    showToast("Persona recuperada:\n" + person);
-                    return;
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String person = snapshot.getValue(String.class);
+                        if (person != null && person.contains("DNI: " + dniToRetrieve)) {
+                            // Mostrar los datos en los EditText
+                            String[] personData = person.split(", ");
+                            editTextName.setText(personData[1].split(": ")[1]);
+                            editTextEmail.setText(personData[2].split(": ")[1]);
+                            // Mostrar los datos en un Toast
+                            showToast("Persona recuperada:\n" + person);
+                            return;
+                        }
+                    }
+                    showToast("Persona con DNI " + dniToRetrieve + " no encontrada");
                 }
-            }
-            showToast("Persona con DNI " + dniToRetrieve + " no encontrada");
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    showToast("Error al acceder a la base de datos: " + databaseError.getMessage());
+                }
+            });
         } else {
             showToast("Por favor, introduce un DNI para recuperar");
         }
@@ -97,30 +109,43 @@ public class MainActivity extends AppCompatActivity {
     private void updatePerson() {
         String dniToUpdate = editTextDNI.getText().toString().trim();
         if (!dniToUpdate.isEmpty()) {
-            for (int i = 0; i < items.size(); i++) {
-                String person = items.get(i);
-                if (person.contains("DNI: " + dniToUpdate)) {
-                    // Actualizar los datos de la persona
-                    String updatedName = editTextName.getText().toString().trim();
-                    String updatedEmail = editTextEmail.getText().toString().trim();
-                    if (!updatedName.isEmpty() && !updatedEmail.isEmpty()) {
-                        String updatedPerson = "DNI: " + dniToUpdate + ", Nombre: " + updatedName + ", Email: " + updatedEmail;
-                        items.set(i, updatedPerson);
-                        adapter.notifyDataSetChanged();
-                        showToast("Persona actualizada:\n" + updatedPerson);
-                        clearFields();
-                        return;
-                    } else {
-                        showToast("Por favor, completa todos los campos para actualizar");
-                        return;
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String person = snapshot.getValue(String.class);
+                        if (person != null && person.contains("DNI: " + dniToUpdate)) {
+                            // Actualizar los datos de la persona
+                            String updatedName = editTextName.getText().toString().trim();
+                            String updatedEmail = editTextEmail.getText().toString().trim();
+                            if (!updatedName.isEmpty() && !updatedEmail.isEmpty()) {
+                                String updatedPerson = "DNI: " + dniToUpdate + ", Nombre: " + updatedName + ", Email: " + updatedEmail;
+                                snapshot.getRef().setValue(updatedPerson)
+                                        .addOnSuccessListener(aVoid -> {
+                                            showToast("Persona actualizada en la base de datos");
+                                            clearFields();
+                                        })
+                                        .addOnFailureListener(e -> showToast("Error al actualizar persona: " + e.getMessage()));
+                                return;
+                            } else {
+                                showToast("Por favor, completa todos los campos para actualizar");
+                                return;
+                            }
+                        }
                     }
+                    showToast("Persona con DNI " + dniToUpdate + " no encontrada");
                 }
-            }
-            showToast("Persona con DNI " + dniToUpdate + " no encontrada");
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    showToast("Error al acceder a la base de datos: " + databaseError.getMessage());
+                }
+            });
         } else {
             showToast("Por favor, introduce un DNI para actualizar");
         }
     }
+
 
     private void deletePerson() {
         String dniToDelete = editTextDNI.getText().toString().trim();

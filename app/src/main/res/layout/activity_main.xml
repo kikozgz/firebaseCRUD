@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/editTextEmail"
-        android:text="Agregar" />
+        android:text="Cre." />
 
     <Button
         android:id="@+id/buttonRetrieve"
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/buttonAdd"
         android:layout_below="@id/editTextEmail"
-        android:text="Recuperar" />
+        android:text="Rec." />
 
     <Button
         android:id="@+id/buttonUpdate"
@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/buttonRetrieve"
         android:layout_below="@id/editTextEmail"
-        android:text="Modificar" />
+        android:text="Upd.." />
 
     <Button
         android:id="@+id/buttonDelete"
@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/buttonUpdate"
         android:layout_below="@id/editTextEmail"
-        android:text="Eliminar" />
+        android:text="Del." />
 
     <ListView
         android:id="@+id/listView"
