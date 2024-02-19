@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "87776593039",
+    "firebase_url": "https://crud-pmdm-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "crud-pmdm",
+    "storage_bucket": "crud-pmdm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:87776593039:android:006f81d7214981471a9cfa",
+        "android_client_info": {
+          "package_name": "com.example.firebasecrud"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkov4gvfFCfkj1WdBH0HYX5r1ASB7MSxE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
